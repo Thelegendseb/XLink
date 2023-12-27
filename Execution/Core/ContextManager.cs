@@ -96,9 +96,9 @@ namespace Execution.Core
 
             foreach (Context context in this.Contexts)
             {
-                foreach (KeyValuePair<string, XAction.ResponseSchema> action in context.GetActions())
+                foreach (KeyValuePair<XAction.RequestSchema, XAction.ResponseSchema> action in context.GetActions())
                 {
-                    actions.Add((action.Key, context.GetName()));
+                    actions.Add((action.Key.Name, context.GetName()));
                 }
             }
 
