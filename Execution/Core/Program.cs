@@ -3,35 +3,43 @@
 using XLink.Utility;
 using XLink.Actions;
 using XLink.Context.Contexts;
+using Execution.Core;
+using Microsoft.Extensions.Primitives;
 
 namespace XLink.Core
 {
 
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
-            var context = new con_Spotify();
 
-            //Dictionary<string,XAction.Schema> actions = context.GetActions();
+            ContextManager contextManager = new ContextManager();
 
-            //for (int i = 0; i < actions.Count; i++)
-            //{
-            //    Console.WriteLine(actions.ElementAt(i).Key);
-            //}
+            contextManager.Init();
 
-            //Console.WriteLine();
-            //Console.WriteLine();
+            Console.WriteLine();
+            foreach((string,string) kvp in contextManager.GetActions())
+            {
+                Console.WriteLine(kvp.Item1 + " " + kvp.Item2);
+            }
+            Console.WriteLine();
 
             while (true)
             {
 
                 string command = Console.ReadLine();
-                string[] command_parts = command.Split(" ");
-                string action = command_parts[0];
-                string query = command_parts.Length > 1 ? command_parts[1] : "";
-                XActionResponse result = context.RunAction(action, query);
                 ClearCurrentConsoleLine();
+                string[] command_parts = command.Split(" ");
+                string context_name = command_parts[0];
+                string action = command_parts[1];
+                string args = command_parts.Length > 2 ? command_parts[2] : "";
+                XActionResponse result = contextManager.Execute(context_name, action, args);
+
+                if(result == null)
+                {
+                    continue;
+                }
 
                 if (result.Result != null)
                 {

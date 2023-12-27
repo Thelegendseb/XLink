@@ -44,9 +44,9 @@ namespace Execution.Core
 
         // summary: Execute an action
         // param: string actionName - the name of the action to execute
-        // param: string query - the query to execute the action with
+        // param: string args - the args to execute the action with
         // returns: XActionResponse - the response from the action
-        XActionResponse Execute(string contextName, string actionName, string query)
+        public XActionResponse Execute(string contextName, string actionName, string args)
         {
 
              Context context = this.Contexts.Find(x => x.GetName() == contextName);
@@ -57,7 +57,7 @@ namespace Execution.Core
             }
             else
             {
-                return context.RunAction(actionName, query);
+                return context.RunAction(actionName, args);
             }
 
         }

@@ -52,21 +52,21 @@ namespace XLink.Context
 
         // summary: Run an action from the context
         // param: string actionName - the name of the action to run
-        // param: string query - the query to run the action with
+        // param: string args - the args to run the action with
         // returns: bool - whether or not the action was successful
-        public XActionResponse RunAction(string actionName, string query)
+        public XActionResponse RunAction(string actionName, string args)
         {
             if (Actions.Keys.Any(action => action.Name == actionName))
             {
                 XAction.ResponseSchema action = this.Actions.First(x => x.Key.Name == actionName).Value;
                 this.actionRunning = true;
-                XActionResponse result = action(query);
+                XActionResponse result = action(args);
                 this.actionRunning = false;
                 return result;
             }
             else
             {
-                return new XActionResponse(this.GetName(), actionName, query, false, "Action not found in context '" + this.Name + "'.", "");
+                return new XActionResponse(this.GetName(), actionName, args, false, "Action not found in context '" + this.Name + "'.", "");
             }
         }
 
