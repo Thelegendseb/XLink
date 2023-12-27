@@ -11,7 +11,7 @@ namespace XLink.Core
     {
         public static void Main(string[] args)
         {
-            var context = new con_Spotify("Spotify");
+            var context = new con_Spotify();
 
             //Dictionary<string,XAction.Schema> actions = context.GetActions();
 

@@ -20,7 +20,7 @@ namespace XLink.Context
         protected ContextType ContextType = ContextType.Misc;
 
         // summary: The actions for the context
-        protected Dictionary<string, XAction.Schema> Actions;
+        protected Dictionary<XAction.RequestSchema, XAction.ResponseSchema> Actions;
 
         // summary: Whether or not an action is running
         protected bool actionRunning = false;
@@ -35,7 +35,7 @@ namespace XLink.Context
         protected abstract Dictionary<string, string> LoadConfigValues(IConfigurationSection section);
 
         // summary: Load the actions for the context
-        protected abstract Dictionary<string, XAction.Schema> LoadActions();
+        protected abstract Dictionary<XAction.RequestSchema, XAction.ResponseSchema> LoadActions();
 
         // summary: Constructor for the context
         // param: string name - the name of the context
@@ -56,18 +56,18 @@ namespace XLink.Context
         // returns: bool - whether or not the action was successful
         public XActionResponse RunAction(string actionName, string query)
         {
-            if (this.Actions.ContainsKey(actionName))
+            if (Actions.Keys.Any(action => action.Name == actionName))
             {
+                XAction.ResponseSchema action = this.Actions.First(x => x.Key.Name == actionName).Value;
                 this.actionRunning = true;
-                XActionResponse result = this.Actions[actionName](query);
+                XActionResponse result = action(query);
                 this.actionRunning = false;
                 return result;
             }
             else
             {
-                return new XActionResponse(actionName,query,false,"Action not found in context '" + this.Name + "'.","");
+                return new XActionResponse(this.GetName(), actionName, query, false, "Action not found in context '" + this.Name + "'.", "");
             }
-            
         }
 
         // ==================== Getters ====================
@@ -96,7 +96,7 @@ namespace XLink.Context
 
         // summary: Get the actions for the context
         // returns: Dictionary<string, XAction.Schema> - the actions for the context
-        public Dictionary<string, XAction.Schema> GetActions()
+        public Dictionary<XAction.RequestSchema, XAction.ResponseSchema> GetActions()
         {
             return this.Actions;
         }

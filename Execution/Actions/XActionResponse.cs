@@ -9,9 +9,11 @@ namespace XLink.Actions
     // summary: The response from an action
     public class XActionResponse
     {
+        // summary: the name of the context
+        public string ContextName { get; set; }
 
         // summary: The name of the action
-        public string Name { get; set; }
+        public string ActionName { get; set; }
 
         // summary: The query used to run the action
         public string Query { get; set; }
@@ -31,13 +33,15 @@ namespace XLink.Actions
         // param: string result - the result of the action
         // param: bool success - whether or not the action was successful
         // param: string errorMessage - the error message if the action was not successful
-        public XActionResponse(string name,
+        public XActionResponse(string contextname,
+                              string actionname,
                               string query,
                               bool success,
                               string errorMessage,
                               string result = "This action does not return a result.")
         {
-            this.Name = name;
+            this.ContextName = contextname;
+            this.ActionName = actionname;
             this.Query = query;
             this.Result = result;
             this.Success = success;
@@ -47,7 +51,7 @@ namespace XLink.Actions
         // summary: Overriden ToString method
         public override string ToString()
         {
-            return $"Action: {this.Name} Query: {this.Query} | Result: {this.Result} | Success: {this.Success} | ErrorMessage: {this.ErrorMessage}";
+            return $"Context: {this.ContextName} | Action: {this.ActionName} | Query: {this.Query} | Result: {this.Result} | Success: {this.Success} | ErrorMessage: {this.ErrorMessage}";
         }
 
 

@@ -26,7 +26,7 @@ namespace XLink.Context.Contexts
 
         // summary: The constructor for the context
         // param: string name - the name of the context
-        public con_Spotify(string name) : base(name, ContextType.Application)
+        public con_Spotify() : base("Spotify", ContextType.Application)
         {
 
             Logger.Log("Spotify Context Loaded", LogLevel.Info);
@@ -89,24 +89,24 @@ namespace XLink.Context.Contexts
 
         // summary: Load the actions for the context
         // returns: Dictionary<string, ActionSchema> - the actions for the context
-        protected override Dictionary<string, XAction.Schema> LoadActions()
+        protected override Dictionary<XAction.RequestSchema, XAction.ResponseSchema> LoadActions()
         {
-            var actions = new Dictionary<string, XAction.Schema>();
-            actions["play"] = PlayAction;
-            actions["pause"] = PauseAction;
-            actions["next"] = NextAction;
-            actions["previous"] = PreviousAction;
-            actions["setvolume"] = SetVolumeAction;
-            actions["increasevolume"] = IncreaseVolumeAction;
-            actions["decreasevolume"] = DecreaseVolumeAction;
-            actions["playplaylist"] = PlayPlaylistAction;
-            actions["playsearch"] = PlaySearchAction;
-            actions["likecurrentsong"] = LikeCurrentSongAction;
-            actions["seekto"] = SeekToAction;
-            actions["getcurrentsong"] = GetCurrentSongAction;
-            actions["getqueue"] = GetQueueAction;
-            actions["getplaylists"] = GetPlaylistsAction;
-            return actions;
+            var actions = new Dictionary<XAction.RequestSchema, XAction.ResponseSchema>();
+            actions[new XAction.RequestSchema() { Name = "play", ReturnsResult = false }] = PlayAction;
+            actions[new XAction.RequestSchema() { Name = "pause", ReturnsResult = false }] = PauseAction;
+            actions[new XAction.RequestSchema() { Name = "next", ReturnsResult = false }] = NextAction;
+            actions[new XAction.RequestSchema() { Name = "previous", ReturnsResult = false }] = PreviousAction;
+            actions[new XAction.RequestSchema() { Name = "setvolume", ReturnsResult = false }] = SetVolumeAction;
+            actions[new XAction.RequestSchema() { Name = "increasevolume", ReturnsResult = false }] = IncreaseVolumeAction;
+            actions[new XAction.RequestSchema() { Name = "decreasevolume", ReturnsResult = false }] = DecreaseVolumeAction;
+            actions[new XAction.RequestSchema() { Name = "playplaylist", ReturnsResult = false }] = PlayPlaylistAction;
+            actions[new XAction.RequestSchema() { Name = "playsearch", ReturnsResult = false }] = PlaySearchAction;
+            actions[new XAction.RequestSchema() { Name = "likecurrentsong", ReturnsResult = false }] = LikeCurrentSongAction;
+            actions[new XAction.RequestSchema() { Name = "seekto", ReturnsResult = false }] = SeekToAction;
+            actions[new XAction.RequestSchema() { Name = "getcurrentsong", ReturnsResult = true }] = GetCurrentSongAction;
+            actions[new XAction.RequestSchema() { Name = "getqueue", ReturnsResult = true }] = GetQueueAction;
+            actions[new XAction.RequestSchema() { Name = "getplaylists", ReturnsResult = true }] = GetPlaylistsAction;
+            return actions;        
         }
 
         // ==================== Actions ====================
@@ -115,12 +115,12 @@ namespace XLink.Context.Contexts
             try
             {
                 this.Spotify.Player.ResumePlayback().GetAwaiter().GetResult();
-                return new XActionResponse("play", query, true, null, "Playing");
+                return new XActionResponse(this.GetName(), "play", query, true, null, "Playing");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error playing track: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("play", query, false, "Error playing track: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "play", query, false, "Error playing track: " + ex.Message, null);
             }      
         }
 
@@ -129,12 +129,12 @@ namespace XLink.Context.Contexts
             try
             {
                 this.Spotify.Player.PausePlayback().GetAwaiter().GetResult();
-                return new XActionResponse("pause", query, true, null, "Paused");
+                return new XActionResponse(this.GetName(), "pause", query, true, null, "Paused");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error pausing track: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("pause", query, false, "Error pausing track: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "pause", query, false, "Error pausing track: " + ex.Message, null);
             }
         }
 
@@ -143,12 +143,12 @@ namespace XLink.Context.Contexts
             try
             {
                 this.Spotify.Player.SkipNext().GetAwaiter().GetResult();
-                return new XActionResponse("next", query, true, null, "Skipped to next track");
+                return new XActionResponse(this.GetName(), "next", query, true, null, "Skipped to next track");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error Skipping track: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("next", query, false, "Error Skipping track: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "next", query, false, "Error Skipping track: " + ex.Message, null);
             }
         }
 
@@ -157,12 +157,12 @@ namespace XLink.Context.Contexts
             try
             {
                 this.Spotify.Player.SkipPrevious().GetAwaiter().GetResult();
-                return new XActionResponse("previous", query, true, null, "Skipped to previous track");
+                return new XActionResponse(this.GetName(), "previous", query, true, null, "Skipped to previous track");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error Skipping back track: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("previous", query, false, "Error Skipping back track: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "previous", query, false, "Error Skipping back track: " + ex.Message, null);
             }
         }
 
@@ -180,12 +180,12 @@ namespace XLink.Context.Contexts
                     volnew = 0;
                 }
                 this.Spotify.Player.SetVolume(new PlayerVolumeRequest(volnew)).GetAwaiter().GetResult();
-                return new XActionResponse("setvolume", query, true, null, "Volume set to " + volnew.ToString());
+                return new XActionResponse(this.GetName(), "setvolume", query, true, null, "Volume set to " + volnew.ToString());
             }
             catch (Exception ex)
             {
                 Logger.Log("Error setting volume: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("setvolume", query, false, "Error setting volume: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "setvolume", query, false, "Error setting volume: " + ex.Message, null);
             }
         }
 
@@ -204,12 +204,12 @@ namespace XLink.Context.Contexts
                     volnew = 0;
                 }
                 this.Spotify.Player.SetVolume(new PlayerVolumeRequest(volnew)).GetAwaiter().GetResult();
-                return new XActionResponse("increasevolume", query, true, null, "Volume increased to " + volnew.ToString());
+                return new XActionResponse(this.GetName(), "increasevolume", query, true, null, "Volume increased to " + volnew.ToString());
             }
             catch (Exception ex)
             {
                 Logger.Log("Error increasing volume: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("increasevolume", query, false, "Error increasing volume: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "increasevolume", query, false, "Error increasing volume: " + ex.Message, null);
             }
         }
 
@@ -228,12 +228,12 @@ namespace XLink.Context.Contexts
                     volnew = 0;
                 }
                 this.Spotify.Player.SetVolume(new PlayerVolumeRequest(volnew)).GetAwaiter().GetResult();
-                return new XActionResponse("decreasevolume", query, true, null, "Volume decreased to " + volnew.ToString());
+                return new XActionResponse(this.GetName(), "decreasevolume", query, true, null, "Volume decreased to " + volnew.ToString());
             }
             catch (Exception ex)
             {
                 Logger.Log("Error decreasing volume: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("decreasevolume", query, false, "Error decreasing volume: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "decreasevolume", query, false, "Error decreasing volume: " + ex.Message, null);
             }
         }
 
@@ -279,12 +279,12 @@ namespace XLink.Context.Contexts
                         {
                             Uris = trackUris,
                         }).GetAwaiter().GetResult();
-                        return new XActionResponse("playplaylist", query, true, null, "Playing liked songs");
+                        return new XActionResponse(this.GetName(), "playplaylist", query, true, null, "Playing liked songs");
                     }
                     else
                     {
                         Logger.Log("No liked songs found", LogLevel.Warning);
-                        return new XActionResponse("playplaylist", query, false, "No liked songs found", null);
+                        return new XActionResponse(this.GetName(), "playplaylist", query, false, "No liked songs found", null);
                     }
                 }
                 else
@@ -294,13 +294,13 @@ namespace XLink.Context.Contexts
                     {
                         ContextUri = playlistUri,
                     }).GetAwaiter().GetResult();
-                    return new XActionResponse("playplaylist", query, true, null, "Playing playlist " + query);
+                    return new XActionResponse(this.GetName(), "playplaylist", query, true, null, "Playing playlist " + query);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log("Error playing playlist: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("playplaylist", query, false, "Error playing playlist: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "playplaylist", query, false, "Error playing playlist: " + ex.Message, null);
             }
 
         }
@@ -317,12 +317,12 @@ namespace XLink.Context.Contexts
                 {
                     Uris = new List<string>() { uri },
                 }).GetAwaiter().GetResult();
-                return new XActionResponse("playsearch", query, true, null, "Playing " + query);
+                return new XActionResponse(this.GetName(), "playsearch", query, true, null, "Playing " + query);
             }
             catch (Exception ex)
             {
                 Logger.Log("Error playing song: " + ex.Message, LogLevel.Error);
-               return new XActionResponse("playsearch", query, false, "Error playing song: " + ex.Message, null);
+               return new XActionResponse(this.GetName(), "playsearch", query, false, "Error playing song: " + ex.Message, null);
             }
         }
 
@@ -334,12 +334,12 @@ namespace XLink.Context.Contexts
                 CurrentlyPlaying currentlyPlaying = this.Spotify.Player.GetCurrentlyPlaying(request).GetAwaiter().GetResult();
                 FullTrack playableItem = (FullTrack)currentlyPlaying.Item;
                 this.Spotify.Library.SaveTracks(new LibrarySaveTracksRequest(new List<string>() { playableItem.Id })).GetAwaiter().GetResult();
-                return new XActionResponse("likecurrentsong", query, true, null, "Liked song");
+                return new XActionResponse(this.GetName(), "likecurrentsong", query, true, null, "Liked song");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error liking song: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("likecurrentsong", query, false, "Error liking song: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "likecurrentsong", query, false, "Error liking song: " + ex.Message, null);
             }
         }
 
@@ -354,12 +354,12 @@ namespace XLink.Context.Contexts
                 int percentage = int.Parse(query);
                 int milliseconds = (duration * percentage) / 100;
                 this.Spotify.Player.SeekTo(new PlayerSeekToRequest(milliseconds)).GetAwaiter().GetResult();
-                return new XActionResponse("setplaybackposition", query, true, null, "Set playback position to " + query + "%");
+                return new XActionResponse(this.GetName(), "setplaybackposition", query, true, null, "Set playback position to " + query + "%");
             }
             catch (Exception ex)
             {
                 Logger.Log("Error setting playback position: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("setplaybackposition", query, false, "Error setting playback position: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "setplaybackposition", query, false, "Error setting playback position: " + ex.Message, null);
             }
         }
 
@@ -370,12 +370,12 @@ namespace XLink.Context.Contexts
                 PlayerCurrentlyPlayingRequest request = new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track);
                 CurrentlyPlaying currentlyPlaying = this.Spotify.Player.GetCurrentlyPlaying(request).GetAwaiter().GetResult();
                 FullTrack playableItem = (FullTrack)currentlyPlaying.Item;
-                return new XActionResponse("getcurrentsong", query, true, null, SongToString(playableItem));
+                return new XActionResponse(this.GetName(), "getcurrentsong", query, true, null, SongToString(playableItem));
             }
             catch (Exception ex)
             {
                 Logger.Log("Error getting current song: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("getcurrentsong", query, false, "Error getting current song: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "getcurrentsong", query, false, "Error getting current song: " + ex.Message, null);
             }
         }
 
@@ -390,12 +390,12 @@ namespace XLink.Context.Contexts
                     string song = SongToString((FullTrack)response.Queue[i]);
                     queue += song + "\n";
                 }
-                return new XActionResponse("getqueue", query, true, null, queue);
+                return new XActionResponse(this.GetName(), "getqueue", query, true, null, queue);
             }
             catch (Exception ex)
             {
                 Logger.Log("Error getting queue: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("getqueue", query, false, "Error getting queue: " + ex.Message, null);
+                return new XActionResponse(this.GetName(), "getqueue", query, false, "Error getting queue: " + ex.Message, null);
             }
         }
 
@@ -408,12 +408,12 @@ namespace XLink.Context.Contexts
                 {
                     playlists += playlist.Key + "\n";
                 }
-                return new XActionResponse("getplaylists", query, true, null, playlists);
+                return new XActionResponse(this.GetName(), "getplaylists", query, true, null, playlists);
             }
             catch (Exception ex)
             {
                 Logger.Log("Error getting playlists: " + ex.Message, LogLevel.Error);
-                return new XActionResponse("getplaylists", query, false, "Error getting playlists: " + ex.Message, null);
+                return new XActionResponse( this.GetName(), "getplaylists", query, false, "Error getting playlists: " + ex.Message, null);
             }
         }
 
