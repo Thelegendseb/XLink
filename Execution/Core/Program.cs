@@ -19,9 +19,12 @@ namespace XLink.Core
             contextManager.Init();
 
             Console.WriteLine();
-            foreach((string,string) kvp in contextManager.GetActions())
+            foreach (KeyValuePair<string,List<string>> kvp in contextManager.GetActions())
             {
-                Console.WriteLine(kvp.Item1 + " " + kvp.Item2);
+                foreach (string action in kvp.Value)
+                {
+                    Console.WriteLine(kvp.Key + " " + action);
+                }
             }
             Console.WriteLine();
 

@@ -85,6 +85,7 @@ namespace XLink.Context.Contexts
         // returns: Dictionary<string, ActionSchema> - the actions for the context
         protected override Dictionary<XAction.RequestSchema, XAction.ResponseSchema> LoadActions()
         {
+
             var actions = new Dictionary<XAction.RequestSchema, XAction.ResponseSchema>();
             actions[new XAction.RequestSchema() 
             { Name = "play", ReturnsResult = false, RequiresArgs = false }] = PlayAction;
@@ -114,7 +115,8 @@ namespace XLink.Context.Contexts
             { Name = "getqueue", ReturnsResult = true, RequiresArgs = false }] = GetQueueAction;
             actions[new XAction.RequestSchema() 
             { Name = "getplaylists", ReturnsResult = true, RequiresArgs = false }] = GetPlaylistsAction;
-            return actions;        
+            return actions;   
+            
         }
 
         // ==================== Actions ====================

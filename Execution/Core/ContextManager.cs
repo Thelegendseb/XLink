@@ -89,19 +89,14 @@ namespace Execution.Core
         }
 
         // summary: get a list of all the contexts's actions and the context they belong to
-        // returns: List<(string, string)> - the list of actions and their contexts
-        public List<(string, string)> GetActions()
+        // returns: Dictionary<string,List<string>> - the list of contexts and their actions
+        public Dictionary<string, List<string>> GetActions()
         {
-            List<(string, string)> actions = new List<(string, string)>();
-
+            Dictionary<string, List<string>> actions = new Dictionary<string, List<string>>();
             foreach (Context context in this.Contexts)
             {
-                foreach (KeyValuePair<XAction.RequestSchema, XAction.ResponseSchema> action in context.GetActions())
-                {
-                    actions.Add((action.Key.Name, context.GetName()));
-                }
+                actions.Add(context.GetName(), context.GetActions().Keys.Select(x => x.Name).ToList());
             }
-
             return actions;
         }
 
