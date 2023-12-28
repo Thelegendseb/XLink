@@ -86,20 +86,34 @@ namespace XLink.Context.Contexts
         protected override Dictionary<XAction.RequestSchema, XAction.ResponseSchema> LoadActions()
         {
             var actions = new Dictionary<XAction.RequestSchema, XAction.ResponseSchema>();
-            actions[new XAction.RequestSchema() { Name = "play", ReturnsResult = false }] = PlayAction;
-            actions[new XAction.RequestSchema() { Name = "pause", ReturnsResult = false }] = PauseAction;
-            actions[new XAction.RequestSchema() { Name = "next", ReturnsResult = false }] = NextAction;
-            actions[new XAction.RequestSchema() { Name = "previous", ReturnsResult = false }] = PreviousAction;
-            actions[new XAction.RequestSchema() { Name = "setvolume", ReturnsResult = false }] = SetVolumeAction;
-            actions[new XAction.RequestSchema() { Name = "increasevolume", ReturnsResult = false }] = IncreaseVolumeAction;
-            actions[new XAction.RequestSchema() { Name = "decreasevolume", ReturnsResult = false }] = DecreaseVolumeAction;
-            actions[new XAction.RequestSchema() { Name = "playplaylist", ReturnsResult = false }] = PlayPlaylistAction;
-            actions[new XAction.RequestSchema() { Name = "playsearch", ReturnsResult = false }] = PlaySearchAction;
-            actions[new XAction.RequestSchema() { Name = "likecurrentsong", ReturnsResult = false }] = LikeCurrentSongAction;
-            actions[new XAction.RequestSchema() { Name = "seekto", ReturnsResult = false }] = SeekToAction;
-            actions[new XAction.RequestSchema() { Name = "getcurrentsong", ReturnsResult = true }] = GetCurrentSongAction;
-            actions[new XAction.RequestSchema() { Name = "getqueue", ReturnsResult = true }] = GetQueueAction;
-            actions[new XAction.RequestSchema() { Name = "getplaylists", ReturnsResult = true }] = GetPlaylistsAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "play", ReturnsResult = false, RequiresArgs = false }] = PlayAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "pause", ReturnsResult = false, RequiresArgs = false }] = PauseAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "next", ReturnsResult = false, RequiresArgs = false }] = NextAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "previous", ReturnsResult = false, RequiresArgs = false}] = PreviousAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "setvolume", ReturnsResult = false, RequiresArgs = true }] = SetVolumeAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "increasevolume", ReturnsResult = false, RequiresArgs = false}] = IncreaseVolumeAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "decreasevolume", ReturnsResult = false, RequiresArgs = false }] = DecreaseVolumeAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "playplaylist", ReturnsResult = false, RequiresArgs = true }] = PlayPlaylistAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "playsearch", ReturnsResult = false, RequiresArgs = true }] = PlaySearchAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "likecurrentsong", ReturnsResult = false, RequiresArgs = false }] = LikeCurrentSongAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "seekto", ReturnsResult = false, RequiresArgs = true }] = SeekToAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "getcurrentsong", ReturnsResult = true, RequiresArgs = false }] = GetCurrentSongAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "getqueue", ReturnsResult = true, RequiresArgs = false }] = GetQueueAction;
+            actions[new XAction.RequestSchema() 
+            { Name = "getplaylists", ReturnsResult = true, RequiresArgs = false }] = GetPlaylistsAction;
             return actions;        
         }
 
@@ -187,6 +201,10 @@ namespace XLink.Context.Contexts
         {
             try
             {
+                if (args == "")
+                {
+                    args = "10";
+                }
                 CurrentlyPlayingContext context = this.Spotify.Player.GetCurrentPlayback().GetAwaiter().GetResult();
                 int volnew = (int)context.Device.VolumePercent + int.Parse(args);
                 if (volnew > 100)
@@ -211,6 +229,10 @@ namespace XLink.Context.Contexts
         {
             try
             {
+                if (args == "")
+                {
+                    args = "10";
+                }
                 CurrentlyPlayingContext context = this.Spotify.Player.GetCurrentPlayback().GetAwaiter().GetResult();
                 int volnew = (int)context.Device.VolumePercent - int.Parse(args);
                 if (volnew > 100)

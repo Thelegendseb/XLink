@@ -24,6 +24,9 @@ namespace XLink.Actions
 
             // summary: A flag to determine if the action returns a result
             public bool ReturnsResult { get; set; }
+
+            // summary: A flag to determine if the action requires arguments
+            public bool RequiresArgs { get; set; }
         
         }
 
